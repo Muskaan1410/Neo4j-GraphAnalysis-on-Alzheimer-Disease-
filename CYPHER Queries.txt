@@ -1,0 +1,148 @@
+
+//IMPORTING ALL THE NODES OF HETIONET
+LOAD CSV WITH HEADERS FROM 'file:///nodes.csv' AS row
+WITH row
+WHERE row.kind IS NOT NULL
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Molecular Function' THEN [1] ELSE [] END |
+    CREATE (:MolecularFunction {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+    })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Side Effect' THEN [1] ELSE [] END |
+    CREATE (:SideEffect {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+    })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Gene' THEN [1] ELSE [] END |
+    CREATE (:Gene {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+    })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Biological Process' THEN [1] ELSE [] END |
+    CREATE (:BiologicalProcess {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+    })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Anatomy' THEN [1] ELSE [] END |
+    CREATE (:Anatomy {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Compound' THEN [1] ELSE [] END |
+    CREATE (:Compound {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Disease' THEN [1] ELSE [] END |
+    CREATE (:Disease {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Symptom' THEN [1] ELSE [] END |
+    CREATE (:Symptom {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Cellular Component' THEN [1] ELSE [] END |
+    CREATE (:CellularComponent {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Pathway' THEN [1] ELSE [] END |
+    CREATE (:Pathway {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+)
+FOREACH(ignoreMe IN CASE WHEN row.kind = 'Pharmacologic Class' THEN [1] ELSE [] END |
+    CREATE (:PharmacologicClass {
+        identifier: row.identifier,
+        name: row.name,
+        source: row.source,
+        license: row.license,
+        url: row.url,
+        description: row.description,
+        chromosome: row.chromosome
+        })
+);
+
+
+//IMPORTING ALL THE ALZHEIMER'S DISEASE RELATED EDGES
+LOAD CSV WITH HEADERS FROM 'file:///Alzheimer_related_nodes.csv' AS row
+MATCH (startNode {identifier: row.start_id})
+MATCH (endNode {identifier: row.end_id})
+FOREACH(ignoreMe IN CASE WHEN row.direction = 'forward' THEN [1] ELSE [] END |
+    CREATE (startNode)-[:RELATIONSHIP_TYPE {type: row.relationship_type}]->(endNode)
+)
+
+FOREACH(ignoreMe IN CASE WHEN row.direction = 'both' THEN [1] ELSE [] END |
+    CREATE (startNode)-[:RELATIONSHIP_TYPE {type: row.relationship_type}]->(endNode),
+           (endNode)-[:RELATIONSHIP_TYPE {type: row.relationship_type}]->(startNode)
+);
+
+#similarly upload other files
+
+//GETTING KNOWLEDGE GRAPH MATCH (startnode)-[rel]-(endnode)
+WHERE startnode.identifier in ["DOID:10652","4137","PC7_2508","UBERON:0000966","GO:0034399","GO:0008092","DB01229","GO:00083691"] 
+RETURN startnode, rel, endnode
+
+
